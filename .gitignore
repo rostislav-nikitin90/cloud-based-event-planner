@@ -3,6 +3,22 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Firebase credentials
+event-planner-app-4b5fd-firebase-adminsdk-fbsvc-63c55c8b80.json
+
+# Firebase emulator data
+firebase-debug.log
+.firebase/
+
+# Firestore export/import files
+firestore_export/
+
+*.key
+*.pem
+*.crt
+
+settings_local.py
+
 # C extensions
 *.so
 

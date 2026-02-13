@@ -1,0 +1,33 @@
+How to launch the program and demo test:
+Terminal 1 (Command Prompt):
+1. Activate virtual environment:
+venv\Scripts\activate
+
+2. Run the server:
+python manage.py runserver
+
+Terminal 2 (Command Prompt):
+3. Demonstration of CRUD operations:
+## 1. Attempt to Add Data Without Authorization
+This shows my middleware blocking unauthenticated requests:
+curl -X POST http://127.0.0.1:8000/api/events/add/ -H "Content-Type: application/json" -d "{\"event_id\":\"E02\",\"name\":\"Unauthorized Event\",\"date\":\"2026-02-20\",\"location\":\"Budva, Montenegro\"}"
+
+## 2. Log In as Test User (Get ID Token)
+Use Firebase's Identity Toolkit REST API to sign in my test user and get an idToken:
+curl -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBRATpIb8o6PUeiohGv5XbQqhjQkxcRBzc" -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"mypassword123\",\"returnSecureToken\":true}"
+
+Copy the idToken from the JSON response. Then set it in Command Prompt:
+set FIREBASE_ID_TOKEN=...
+
+## 3. Add, Modify, and Retrieve Data (Authorized User)
+Add Event:
+curl -X POST http://127.0.0.1:8000/api/events/add/ -H "Content-Type: application/json" -H "Authorization: %FIREBASE_ID_TOKEN%" -d "{\"event_id\":\"E02\",\"name\":\"Birthday Party\",\"date\":\"2026-02-21\",\"location\":\"Podgorica, Montenegro\"}"
+
+Update Event:
+curl -X PUT http://127.0.0.1:8000/api/events/E02/update/ -H "Content-Type: application/json" -H "Authorization: %FIREBASE_ID_TOKEN%" -d "{\"location\":\"Kotor, Montenegro\"}"
+
+Retrieve Events:
+curl -X GET http://127.0.0.1:8000/api/events/ -H "Authorization: %FIREBASE_ID_TOKEN%"
+
+## 4. Delete Data (Authorized User)
+curl -X DELETE http://127.0.0.1:8000/api/events/E02/delete/ -H "Authorization: %FIREBASE_ID_TOKEN%"
