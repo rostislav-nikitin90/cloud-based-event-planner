@@ -1,20 +1,83 @@
-How to launch the program and demo test:
-Terminal 1 (Command Prompt):
-1. Activate virtual environment:
-venv\Scripts\activate
+Before running this program here are necessary steps to follow:
+1. CREATE FIRESTORE COLLECTIONS WITH SAMPLE DOCUMENTS
+Step 1. Open Firestore
+    Go to Firebase Console (console.firebase.google.com).
+    Select your project.
+    In the left menu, click Firestore Database.
+    Click Create Database (if not already created).
+    Choose Start in test mode (for development) and select your region.
 
-2. Run the server:
+Step 2. Create events Collection
+    Click Start Collection.
+    Enter collection ID: events.
+    Add a sample document:
+        event_id: "E01"
+        name: "Tech Conference"
+        date: "2026-03-15"
+        location: "Budva, Montenegro"
+
+Step 3. Create guests Collection
+    Click Start Collection again.
+    Enter collection ID: guests.
+    Add a sample document:
+        guest_id: "guest1"
+        name: "Alice Johnson"
+        email: "alice@example.com"
+
+Step 4. Create rsvps Collection
+    Click Start Collection again.
+    Enter collection ID: rsvps.
+    Add a sample document:
+        event_id: "E01"
+        guest_id: "guest1"
+        status: "confirmed"
+
+
+2. CREATE A TEST USER IN FIREBASE AUTHENTICATION
+Step 1. Enable Authentication
+    In Firebase Console, go to Authentication.
+    Click Get Started.
+    Enable Email/Password sign‑in method.
+
+Step 2. Add Test User
+    In the Users tab, click Add User.
+    Enter:
+        Email: testuser@example.com
+        Password: mypassword123
+    Click Add User.
+
+
+3. ADD FIREBASE API KEY FOR CURL COMMAND
+Step 1. Find Your API Key
+    In Firebase Console, go to Project Settings.
+    Under General, scroll to Your apps.
+    If you don’t have a web app, click Add App → Web.
+    Register the app, then copy the Firebase SDK snippet.
+    Your API key will look like:
+    "apiKey": "AIzaSyA...xyz"
+
+Step 2. Use API Key in Curl Command (see below ## 2. Log In as Test User (Get ID Token))
+Replace the ... in your curl command with the actual API key:
+curl -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=..." -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"mypassword123\",\"returnSecureToken\":true}"
+
+
+4. HOW TO LAUNCH THE PROGRAM AND DEMO TEST:
+Terminal 1 (Command Prompt):
+Step 1. Activate virtual environment:
+venv\Scripts\activate  # On Windows
+
+Step 2. Run the server:
 python manage.py runserver
 
 Terminal 2 (Command Prompt):
-3. Demonstration of CRUD operations:
+Step 3. Demonstration of CRUD operations:
 ## 1. Attempt to Add Data Without Authorization
 This shows my middleware blocking unauthenticated requests:
 curl -X POST http://127.0.0.1:8000/api/events/add/ -H "Content-Type: application/json" -d "{\"event_id\":\"E02\",\"name\":\"Unauthorized Event\",\"date\":\"2026-02-20\",\"location\":\"Budva, Montenegro\"}"
 
 ## 2. Log In as Test User (Get ID Token)
-Use Firebase's Identity Toolkit REST API to sign in my test user and get an idToken:
-curl -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBRATpIb8o6PUeiohGv5XbQqhjQkxcRBzc" -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"mypassword123\",\"returnSecureToken\":true}"
+Use Firebase's Identity Toolkit REST API to sign in your test user and get an idToken:
+curl -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=..." -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"mypassword123\",\"returnSecureToken\":true}"
 
 Copy the idToken from the JSON response. Then set it in Command Prompt:
 set FIREBASE_ID_TOKEN=...
